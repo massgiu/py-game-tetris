@@ -13,6 +13,8 @@ class Utils:
     TOP_LEFT_X = (SCREEN_W - PLAY_W) // 2
     TOP_LEFT_Y = SCREEN_H - PLAY_H
 
+    FALL_SPEED = 0.27
+
     run = True
 
     # SHAPE FORMATS

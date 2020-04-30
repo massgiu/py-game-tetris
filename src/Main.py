@@ -5,28 +5,38 @@ from src.Utils import Utils
 pygame.init()
 win = pygame.display.set_mode((Utils.SCREEN_W, Utils.SCREEN_H))
 pygame.display.set_caption('Tetris')
-# locked_positions = {}  # (x,y):(255,0,0)
-grid,locked_positions = PlayField.create_grid()
+locked_positions = {}  # (x,y):(255,0,0)
+# grid,locked_positions = PlayField.create_grid()
 
-current_piece = PlayField.get_shape()
-next_piece = PlayField.get_shape()
 clock = pygame.time.Clock()
 
-change_piece = False
-fall_time = 0
-
-
 def main():
+    global win
 
-    # draw grid and border
-    surface = PlayField.draw_grid(win, grid)
-    pygame.draw.rect(surface, (255, 0, 0), (Utils.TOP_LEFT_X, Utils.TOP_LEFT_Y, Utils.PLAY_W, Utils.PLAY_H), 5)
-    pygame.display.update()
+    # init grid
+    grid = PlayField.create_grid()
+    win = PlayField.draw_window(win, grid, 0)
+    current_piece = PlayField.get_shape() #this gets a Piece
+    next_piece = PlayField.get_shape() #this gets another Piece
+    change_piece = False
+    fall_time = 0
+    score = 0
 
     while Utils.run:
+        grid = PlayField.create_grid(grid)
+        fall_time+= clock.get_rawtime()
+        clock.tick()
+        # PIECE FALLING CODE
+        if fall_time / 1000 >= Utils.FALL_SPEED:
+            fall_time = 0
+            current_piece.y += 1
+            if not (PlayField.valid_space(current_piece, grid)) and current_piece.y > 0:
+                current_piece.y -= 1 #avoid piece to go out
+                change_piece = True
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                Utils.run = False
                 pygame.display.quit()
                 quit()
 
@@ -53,6 +63,35 @@ def main():
                     if not PlayField.valid_space(current_piece, grid):
                         current_piece.y -= 1
 
-        PlayField.draw_window(win)
+        shape_pos = PlayField.convert_shape_format(current_piece)
+
+        # add color of piece to the grid for drawing
+        for i in range(len(shape_pos)):
+            x, y = shape_pos[i] #get position of piece
+            if y > -1:  # If we are not above the screen
+                grid[y][x] = current_piece.color
+        # IF PIECE HIT GROUND
+        if change_piece:
+            for pos in shape_pos:
+                p = (pos[0], pos[1])
+                locked_positions[p] = current_piece.color #update locked positions
+            current_piece = next_piece
+            next_piece = PlayField.get_shape()
+            change_piece = False
+            # score += PlayField.clear_rows(grid, locked_positions) * 10
+
+            PlayField.clear_rows(grid, locked_positions)
+        #Update display
+        win=PlayField.draw_window(win, grid, score)
+        PlayField.draw_next_shape(next_piece, win)
+        pygame.display.update()
+
+        if PlayField.check_lost(locked_positions):
+            print("check_lost TRUE")
+            Utils.run = False
+            pygame.display.update()
+            #pygame.time.delay(1500)
+            Utils.run = False
+            # update_score(score)
 
 main()
