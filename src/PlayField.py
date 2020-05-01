@@ -12,9 +12,9 @@ class PlayField:
 
         for row in range(Utils.ROWS):
             for col in range(Utils.COLUMNS):
-                if (row, col) in locked_positions:
-                    c = locked_positions[(row, col)]
-                    grid[col][row] = c
+                if (col, row) in locked_positions:
+                    c = locked_positions[(col, row)]
+                    grid[row][col] = c
         return grid
 
     @staticmethod
@@ -37,18 +37,16 @@ class PlayField:
     @staticmethod
     def valid_space(piece, grid):
         # check tuple (i,j) that has color = (0,0,0)
-        accepted_positions = [[(j, i) for j in range(Utils.COLUMNS) if grid[i][j] == (0, 0, 0)] for i in range(Utils.ROWS)]
-        accepted_positions = [j for sub in accepted_positions for j in sub]  # flat the matrix in vector of tuples
-        # accepted_positions = []
-        # for i in Utils.COLUMNS:
-        #     for j in Utils.ROWS:
-        #        if grid[i][j] == (0, 0, 0)]:
-        #           a.append((j, i))
-        formatted = PlayField.convert_shape_format(piece)  # get the positions of the shape
+        free_positions = []
+        for i in range(Utils.ROWS):
+            for j in range(Utils.COLUMNS):
+               if grid[i][j] == (0, 0, 0):
+                  free_positions.append((j, i))
+        formatted = PlayField.convert_shape_format(piece)  # get the positions of every block of the shape
 
-        for pos in formatted:
-            if pos not in accepted_positions:
-                if pos[1] > -1: #pos[1] is the y
+        for block in formatted:
+            if block not in free_positions:
+                if block[1] > -1: #pos[1] is the y
                     return False
 
         return True
@@ -106,6 +104,7 @@ class PlayField:
                 if y < ind:
                     newKey = (x, y + row_full)
                     locked[newKey] = locked.pop(key) #add row in the top
+        return grid,locked
 
     @staticmethod
     def draw_next_shape(piece, surface):
@@ -119,10 +118,10 @@ class PlayField:
         format = piece.shape[piece.rotation % len(piece.shape)] #select for every shape the right rotation
         #format = ['.....','...O.','..OO.','..OOO']
         for i, line in enumerate(format):
-            row = list(format)
+            row = list(line)
             for j, column in enumerate(row):
                 if column == '0':
-                    pygame.draw.rect(surface, piece.color, (sx + j * Utils.BLOCK_SIZE, sy + i * Utils.BLOCK_SIZE, Utils.BLOCK_SIZE, Utils.BLOCK_SIZE), 0)
+                    pygame.draw.rect(surface, piece.color, (sx + j*Utils.BLOCK_SIZE, sy + i*Utils.BLOCK_SIZE, Utils.BLOCK_SIZE, Utils.BLOCK_SIZE), 0)
 
 
     @staticmethod

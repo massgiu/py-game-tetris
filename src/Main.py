@@ -5,16 +5,17 @@ from src.Utils import Utils
 pygame.init()
 win = pygame.display.set_mode((Utils.SCREEN_W, Utils.SCREEN_H))
 pygame.display.set_caption('Tetris')
-locked_positions = {}  # (x,y):(255,0,0)
+
 # grid,locked_positions = PlayField.create_grid()
 
 clock = pygame.time.Clock()
 
 def main():
     global win
+    locked_positions = {}  # (x,y):(255,0,0)
 
     # init grid
-    grid = PlayField.create_grid()
+    grid = PlayField.create_grid() #matrix that contains (r,g,b)
     win = PlayField.draw_window(win, grid, 0)
     current_piece = PlayField.get_shape() #this gets a Piece
     next_piece = PlayField.get_shape() #this gets another Piece
@@ -23,10 +24,10 @@ def main():
     score = 0
 
     while Utils.run:
-        grid = PlayField.create_grid(grid)
+        grid = PlayField.create_grid(locked_positions)
         fall_time+= clock.get_rawtime()
         clock.tick()
-        # PIECE FALLING CODE
+        # Piece goes down anyay
         if fall_time / 1000 >= Utils.FALL_SPEED:
             fall_time = 0
             current_piece.y += 1
@@ -63,27 +64,26 @@ def main():
                     if not PlayField.valid_space(current_piece, grid):
                         current_piece.y -= 1
 
-        shape_pos = PlayField.convert_shape_format(current_piece)
-
         # add color of piece to the grid for drawing
+        shape_pos = PlayField.convert_shape_format(current_piece)
         for i in range(len(shape_pos)):
             x, y = shape_pos[i] #get position of piece
+            #Update grid
             if y > -1:  # If we are not above the screen
                 grid[y][x] = current_piece.color
         # IF PIECE HIT GROUND
         if change_piece:
-            for pos in shape_pos:
+            for pos in shape_pos: #shape pos are tuple (x,y) for every block
                 p = (pos[0], pos[1])
                 locked_positions[p] = current_piece.color #update locked positions
             current_piece = next_piece
             next_piece = PlayField.get_shape()
             change_piece = False
-            # score += PlayField.clear_rows(grid, locked_positions) * 10
+            grid, locked_positions = PlayField.clear_rows(grid, locked_positions)
 
-            PlayField.clear_rows(grid, locked_positions)
         #Update display
-        win=PlayField.draw_window(win, grid, score)
-        PlayField.draw_next_shape(next_piece, win)
+        win = PlayField.draw_window(win, grid, score)
+        PlayField.draw_next_shape(next_piece, win) #piece on the right side
         pygame.display.update()
 
         if PlayField.check_lost(locked_positions):
