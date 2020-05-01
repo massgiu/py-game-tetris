@@ -27,7 +27,7 @@ class PlayField:
             row = list(line)  # split a string in a list of element (es '..OO.' => ['.','.','O','O','.']
             for j, column in enumerate(row):
                 if column == '0':
-                    positions.append((piece.x + j, piece.y + i))  # positions((1,6),(2,6),(3,6))
+                    positions.append((piece.col + j, piece.row + i))  # positions((1,6),(2,6),(3,6))
 
         for i, pos in enumerate(positions):
             positions[i] = (pos[0] - 2, pos[1] - 4)
@@ -121,7 +121,8 @@ class PlayField:
             row = list(line)
             for j, column in enumerate(row):
                 if column == '0':
-                    pygame.draw.rect(surface, piece.color, (sx + j*Utils.BLOCK_SIZE, sy + i*Utils.BLOCK_SIZE, Utils.BLOCK_SIZE, Utils.BLOCK_SIZE), 0)
+                    pygame.draw.rect(surface, piece.color, (sx + j*Utils.BLOCK_SIZE, sy + i*Utils.BLOCK_SIZE,
+                                                            Utils.BLOCK_SIZE, Utils.BLOCK_SIZE), 0)
 
 
     @staticmethod

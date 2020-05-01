@@ -5,6 +5,8 @@ class Utils:
     PLAY_W = 300  # meaning 300 // 10 = 30 width per block
     PLAY_H = 600  # meaning 600 // 20 = 20 height per block
     BLOCK_SIZE = 30
+    INIT_ROW = 0
+    INIT_COL = 5
 
     ROWS = PLAY_H//BLOCK_SIZE  #20 y
     COLUMNS = PLAY_W//BLOCK_SIZE  #10 x

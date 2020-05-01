@@ -1,6 +1,9 @@
 import pygame
+
 from src.PlayField import PlayField
 from src.Utils import Utils
+from src.Piece import Piece
+import random
 
 pygame.init()
 win = pygame.display.set_mode((Utils.SCREEN_W, Utils.SCREEN_H))
@@ -17,8 +20,8 @@ def main():
     # init grid
     grid = PlayField.create_grid() #matrix that contains (r,g,b)
     win = PlayField.draw_window(win, grid, 0)
-    current_piece = PlayField.get_shape() #this gets a Piece
-    next_piece = PlayField.get_shape() #this gets another Piece
+    current_piece = Piece(Utils.INIT_COL, Utils.INIT_ROW, random.choice(Utils.SHAPES))
+    next_piece = Piece(Utils.INIT_COL, Utils.INIT_ROW, random.choice(Utils.SHAPES))
     change_piece = False
     fall_time = 0
     score = 0
@@ -30,9 +33,9 @@ def main():
         # Piece goes down anyay
         if fall_time / 1000 >= Utils.FALL_SPEED:
             fall_time = 0
-            current_piece.y += 1
-            if not (PlayField.valid_space(current_piece, grid)) and current_piece.y > 0:
-                current_piece.y -= 1 #avoid piece to go out
+            current_piece.row += 1
+            if not (PlayField.valid_space(current_piece, grid)) and current_piece.row > 0:
+                current_piece.row -= 1 #avoid piece to go out
                 change_piece = True
 
         for event in pygame.event.get():
@@ -43,26 +46,16 @@ def main():
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    current_piece.x -= 1
-                    if not PlayField.valid_space(current_piece, grid):
-                        current_piece.x += 1
+                    current_piece.shift_left(grid)
 
-                elif event.key == pygame.K_RIGHT:
-                    current_piece.x += 1
-                    if not PlayField.valid_space(current_piece, grid):
-                        current_piece.x -= 1
+                if event.key == pygame.K_RIGHT:
+                    current_piece.shift_right(grid)
 
-                elif event.key == pygame.K_UP:
-                    # rotate shape
-                    current_piece.rotation = current_piece.rotation + 1 % len(current_piece.shape)
-                    if not PlayField.valid_space(current_piece, grid):
-                        current_piece.rotation = current_piece.rotation - 1 % len(current_piece.shape)
+                if event.key == pygame.K_UP:
+                    current_piece.rotate(grid)
 
                 if event.key == pygame.K_DOWN:
-                    # move shape down
-                    current_piece.y += 1
-                    if not PlayField.valid_space(current_piece, grid):
-                        current_piece.y -= 1
+                    current_piece.go_down(grid)
 
         # add color of piece to the grid for drawing
         shape_pos = PlayField.convert_shape_format(current_piece)
