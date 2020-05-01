@@ -17,39 +17,6 @@ class PlayField:
                     grid[row][col] = c
         return grid
 
-    @staticmethod
-    def convert_shape_format(piece):  # shape ia matrix es Z=[[.....,..000,.000..],[.....,.0000,.000.]]
-        # This method converts a format into a list of positions that we can then return
-        positions = []
-        format = piece.shape[piece.rotation % len(piece.shape)]  # rotation increments and select row1, row2, row1,...
-        # format = ['.....','...O.','..OO.','..OOO']
-        for i, line in enumerate(format):
-            row = list(line)  # split a string in a list of element (es '..OO.' => ['.','.','O','O','.']
-            for j, column in enumerate(row):
-                if column == '0':
-                    positions.append((piece.col + j, piece.row + i))  # positions((1,6),(2,6),(3,6))
-
-        for i, pos in enumerate(positions):
-            positions[i] = (pos[0] - 2, pos[1] - 4)
-
-        return positions
-
-    @staticmethod
-    def valid_space(piece, grid):
-        # check tuple (i,j) that has color = (0,0,0)
-        free_positions = []
-        for i in range(Utils.ROWS):
-            for j in range(Utils.COLUMNS):
-               if grid[i][j] == (0, 0, 0):
-                  free_positions.append((j, i))
-        formatted = PlayField.convert_shape_format(piece)  # get the positions of every block of the shape
-
-        for block in formatted:
-            if block not in free_positions:
-                if block[1] > -1: #pos[1] is the y
-                    return False
-
-        return True
 
     @staticmethod
     def check_lost(positions):
@@ -59,9 +26,6 @@ class PlayField:
                 return True
         return False
 
-    @staticmethod
-    def get_shape():
-        return Piece(5, 0, random.choice(Utils.SHAPES))
 
     @staticmethod
     def draw_text_middle(text, size, color, surface):

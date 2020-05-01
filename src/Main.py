@@ -34,7 +34,7 @@ def main():
         if fall_time / 1000 >= Utils.FALL_SPEED:
             fall_time = 0
             current_piece.row += 1
-            if not (PlayField.valid_space(current_piece, grid)) and current_piece.row > 0:
+            if not (current_piece.is_in_valid_space(grid)) and current_piece.row > 0:
                 current_piece.row -= 1 #avoid piece to go out
                 change_piece = True
 
@@ -58,7 +58,7 @@ def main():
                     current_piece.go_down(grid)
 
         # add color of piece to the grid for drawing
-        shape_pos = PlayField.convert_shape_format(current_piece)
+        shape_pos = current_piece.convert_shape_format()
         for i in range(len(shape_pos)):
             x, y = shape_pos[i] #get position of piece
             #Update grid
@@ -70,7 +70,7 @@ def main():
                 p = (pos[0], pos[1])
                 locked_positions[p] = current_piece.color #update locked positions
             current_piece = next_piece
-            next_piece = PlayField.get_shape()
+            next_piece = Piece(Utils.INIT_COL, Utils.INIT_ROW, random.choice(Utils.SHAPES))
             change_piece = False
             grid, locked_positions = PlayField.clear_rows(grid, locked_positions)
 
