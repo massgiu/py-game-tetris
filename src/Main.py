@@ -33,7 +33,7 @@ def main():
         if fall_time / 1000 >= Utils.FALL_SPEED:
             fall_time = 0
             current_piece.row += 1
-            #Check if the piece is blocked (if yes, the row can't be incremented)
+            #Check if the piece is blocked (if yes, the row can't be incremented) and we chage piece
             if not (current_piece.is_in_valid_space(grid)) and current_piece.row > 0:
                 current_piece.row -= 1 #avoid piece to across other pieces
                 change_piece = True

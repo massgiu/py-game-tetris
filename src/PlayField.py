@@ -5,6 +5,7 @@ import pygame
 class PlayField:
 
     @staticmethod
+    #This method creates an empty grid and add cells from blocked shapes
     def create_grid(locked_positions={}):  # locked_positions is a dictionary (keys=coordinates, values=rgb colors)
         grid = [[Utils.EMPTY_CELL_COLOR for x in range(Utils.COLUMNS)] for x in range(Utils.ROWS)]
 

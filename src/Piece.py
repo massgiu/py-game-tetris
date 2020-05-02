@@ -31,7 +31,7 @@ class Piece:
             self.row -= 1
 
     def is_in_valid_space(self, grid):
-        # check tuple (i,j) that has color = (0,0,0)
+        # check if tuple (i,j) has color of empty cells
         free_positions = []
         for row in range(Utils.ROWS):
             for col in range(Utils.COLUMNS):
@@ -41,7 +41,7 @@ class Piece:
 
         for block in shape_block_pos:
             if block not in free_positions:
-                if block[0] > -1:  # pos[0] is row
+                if block[0] > -1:  # If we are not above the playground
                     return False
 
         return True
@@ -64,9 +64,9 @@ class Piece:
 
     def update_grid(self, grid):
         shape_pos = self.convert_shape_format()
-        for i in range(len(shape_pos)):
-            row, col = shape_pos[i]  # get position of piece
+        for block_pos in range(len(shape_pos)):
+            row, col = shape_pos[block_pos]  # get position of piece
             # Update grid
-            if row > -1:  # If we are not above the screen
+            if row > -1:  # If we are not above the playground
                 grid[row][col] = self.color
         return grid
