@@ -8,8 +8,7 @@ import random
 pygame.init()
 win = pygame.display.set_mode((Utils.SCREEN_W, Utils.SCREEN_H))
 pygame.display.set_caption('Tetris')
-
-# grid,locked_positions = PlayField.create_grid()
+Utils.play_music()
 
 clock = pygame.time.Clock()
 
@@ -30,12 +29,13 @@ def main():
         grid = PlayField.create_grid(locked_positions)
         fall_time+= clock.get_rawtime()
         clock.tick()
-        # Piece goes down anyay
+        # Piece goes down anyway
         if fall_time / 1000 >= Utils.FALL_SPEED:
             fall_time = 0
             current_piece.row += 1
+            #Check if the piece is blocked (if yes, the row can't be incremented)
             if not (current_piece.is_in_valid_space(grid)) and current_piece.row > 0:
-                current_piece.row -= 1 #avoid piece to go out
+                current_piece.row -= 1 #avoid piece to across other pieces
                 change_piece = True
 
         for event in pygame.event.get():
@@ -58,17 +58,15 @@ def main():
                     current_piece.go_down(grid)
 
         # add color of piece to the grid for drawing
+        grid = current_piece.update_grid(grid)
         shape_pos = current_piece.convert_shape_format()
-        for i in range(len(shape_pos)):
-            x, y = shape_pos[i] #get position of piece
-            #Update grid
-            if y > -1:  # If we are not above the screen
-                grid[y][x] = current_piece.color
-        # IF PIECE HIT GROUND
+
+        # if piece hit other pieces and is blocked
         if change_piece:
             for pos in shape_pos: #shape pos are tuple (x,y) for every block
-                p = (pos[0], pos[1])
+                p = (pos[1], pos[0])
                 locked_positions[p] = current_piece.color #update locked positions
+            #swap piece
             current_piece = next_piece
             next_piece = Piece(Utils.INIT_COL, Utils.INIT_ROW, random.choice(Utils.SHAPES))
             change_piece = False

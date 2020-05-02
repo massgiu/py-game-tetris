@@ -1,14 +1,12 @@
-from src.Piece import Piece
 from src.Utils import Utils
 import pygame
-import random
 
 
 class PlayField:
 
     @staticmethod
     def create_grid(locked_positions={}):  # locked_positions is a dictionary (keys=coordinates, values=rgb colors)
-        grid = [[(0, 0, 0) for x in range(Utils.COLUMNS)] for x in range(Utils.ROWS)]
+        grid = [[Utils.EMPTY_CELL_COLOR for x in range(Utils.COLUMNS)] for x in range(Utils.ROWS)]
 
         for row in range(Utils.ROWS):
             for col in range(Utils.COLUMNS):
@@ -38,11 +36,11 @@ class PlayField:
         # Draw grid
         for row in range(Utils.ROWS):
             # horizontal lines
-            pygame.draw.line(surface, (128, 128, 128), (sx, sy + row * Utils.BLOCK_SIZE),
-                             (sx + Utils.PLAY_W, sy + row * 30))
+            pygame.draw.line(surface, Utils.GRID_COLOR, (sx, sy + row * Utils.BLOCK_SIZE),
+                             (sx + Utils.PLAY_W, sy + row * Utils.BLOCK_SIZE))
         for col in range(Utils.COLUMNS):
             # vertical lines
-            pygame.draw.line(surface, (128, 128, 128), (sx + col * Utils.BLOCK_SIZE, sy),
+            pygame.draw.line(surface, Utils.GRID_COLOR, (sx + col * Utils.BLOCK_SIZE, sy),
                              (sx + col * Utils.BLOCK_SIZE, sy + Utils.PLAY_H))
         return surface
 
@@ -53,7 +51,7 @@ class PlayField:
         row_full = 0
         for i in range(len(grid) - 1, -1, -1): #from len(grid)-1 to 0 step -1 (from numColums to 0)
             row = grid[i] #grid contains (r,g,b) that is (0,0,0) if cell is empty (grid[i] is a row)
-            if (0, 0, 0) not in row:
+            if Utils.EMPTY_CELL_COLOR not in row:
                 row_full += 1 #this increments if the row is full
                 # add positions to remove from locked
                 ind = i #row i is full
@@ -76,7 +74,7 @@ class PlayField:
         sx = Utils.TOP_LEFT_X + Utils.PLAY_W + 50
         sy = Utils.TOP_LEFT_Y + Utils.PLAY_H / 2 - 100
         font = pygame.font.SysFont('comicsans', 30)
-        label = font.render('Next Shape', 1, (255, 255, 255))
+        label = font.render('Next Shape', 1, Utils.FONT_COLOR)
         surface.blit(label, (sx + 10, sy - 30))
 
         format = piece.shape[piece.rotation % len(piece.shape)] #select for every shape the right rotation
@@ -91,17 +89,17 @@ class PlayField:
 
     @staticmethod
     def draw_window(surface, grid, score=0):
-        surface.fill((0, 0, 0))
+        surface.fill(Utils.BACKGROUND_COLOR)
         # Tetris Title
         font = pygame.font.SysFont('comicsans', 60)
-        label = font.render('TETRIS', 1, (255, 255, 255))
+        label = font.render('TETRIS', 1, Utils.FONT_COLOR)
         surface.blit(label, ((Utils.TOP_LEFT_X + Utils.PLAY_W / 2 - (label.get_width() / 2), 30)))
         # Draw border
         pygame.draw.rect(surface, (255, 0, 0), (Utils.TOP_LEFT_X, Utils.TOP_LEFT_Y, Utils.PLAY_W, Utils.PLAY_H), 3)
 
         # current score
         font = pygame.font.SysFont('comicsans', 30)
-        label = font.render('Score: ' + str(score), 1, (255, 255, 255))
+        label = font.render('Score: ' + str(score), 1, Utils.FONT_COLOR)
         surface.blit(label, (Utils.TOP_LEFT_X - 150, Utils.TOP_LEFT_Y + 160))
 
         #draw blocks
