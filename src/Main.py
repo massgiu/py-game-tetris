@@ -70,7 +70,8 @@ def main():
             current_piece = next_piece
             next_piece = Piece(Utils.INIT_COL, Utils.INIT_ROW, random.choice(Utils.SHAPES))
             change_piece = False
-            grid, locked_positions = PlayField.clear_rows(grid, locked_positions)
+            grid, locked_positions, inc_score = PlayField.clear_rows(grid, locked_positions)
+            score += inc_score
 
         #Update display
         win = PlayField.draw_window(win, grid, score)
@@ -83,6 +84,5 @@ def main():
             pygame.display.update()
             #pygame.time.delay(1500)
             Utils.run = False
-            # update_score(score)
 
 main()

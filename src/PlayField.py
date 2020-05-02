@@ -66,7 +66,7 @@ class PlayField:
                 if y < ind:
                     newKey = (x, y + row_full)
                     locked[newKey] = locked.pop(key) #add row in the top
-        return grid,locked
+        return grid,locked, row_full
 
     @staticmethod
     def draw_next_shape(piece, surface):

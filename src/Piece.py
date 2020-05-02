@@ -35,13 +35,13 @@ class Piece:
         free_positions = []
         for row in range(Utils.ROWS):
             for col in range(Utils.COLUMNS):
-                if grid[row][col] == Utils.EMPTY_CELL_COLOR:
+                if grid[row][col] == Utils.EMPTY_CELL_COLOR: #if grid cell is empty
                     free_positions.append((row, col))
         shape_block_pos = self.convert_shape_format()  # get the positions of every block of the shape
 
         for block in shape_block_pos:
             if block not in free_positions:
-                if block[0] > -1:  # pos[1] is row
+                if block[0] > -1:  # pos[0] is row
                     return False
 
         return True
