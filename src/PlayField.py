@@ -72,7 +72,7 @@ class PlayField:
     def draw_next_shape(piece, surface):
         #This method draws the next piece in the right side of the screen
         sx = Utils.TOP_LEFT_X + Utils.PLAY_W + 50
-        sy = Utils.TOP_LEFT_Y + Utils.PLAY_H / 2 - 100
+        sy = Utils.TOP_LEFT_Y + Utils.PLAY_H / 2 - 150
         font = pygame.font.SysFont('comicsans', 30)
         label = font.render('Next Shape', 1, Utils.FONT_COLOR)
         surface.blit(label, (sx + 10, sy - 30))
@@ -89,18 +89,23 @@ class PlayField:
 
     @staticmethod
     def draw_window(surface, grid, score=0):
-        surface.fill(Utils.BACKGROUND_COLOR)
+
+        #background image
+        bg = pygame.image.load("../media/bg.jpg")
+        surface.blit(bg, (0, 0))
+
+        # surface.fill(Utils.BACKGROUND_COLOR)
         # Tetris Title
         font = pygame.font.SysFont('comicsans', 60)
         label = font.render('TETRIS', 1, Utils.FONT_COLOR)
         surface.blit(label, ((Utils.TOP_LEFT_X + Utils.PLAY_W / 2 - (label.get_width() / 2), 30)))
         # Draw border
-        pygame.draw.rect(surface, (255, 0, 0), (Utils.TOP_LEFT_X, Utils.TOP_LEFT_Y, Utils.PLAY_W, Utils.PLAY_H), 3)
+        pygame.draw.rect(surface, (0, 0, 255), (Utils.TOP_LEFT_X, Utils.TOP_LEFT_Y, Utils.PLAY_W, Utils.PLAY_H), 3)
 
         # current score
         font = pygame.font.SysFont('comicsans', 30)
         label = font.render('Score: ' + str(score), 1, Utils.FONT_COLOR)
-        surface.blit(label, (Utils.TOP_LEFT_X - 150, Utils.TOP_LEFT_Y + 160))
+        surface.blit(label, (Utils.TOP_LEFT_X - 150, Utils.TOP_LEFT_Y + 110))
 
         #draw blocks
         for i in range(Utils.ROWS):

@@ -19,7 +19,7 @@ class Utils:
     FALL_SPEED = 0.27
 
     BACKGROUND_COLOR = (40, 40, 40) #rgb
-    EMPTY_CELL_COLOR = (0, 0, 0)  # rgb
+    EMPTY_CELL_COLOR = (50, 50, 50)  # rgb
     GRID_COLOR = (128, 128, 128)  # rgb
     FONT_COLOR = (255, 255, 255)
 
