@@ -70,7 +70,7 @@ def main():
             current_piece = next_piece
             next_piece = Piece(Utils.INIT_COL, Utils.INIT_ROW, random.choice(Utils.SHAPES))
             change_piece = False
-            grid, locked_positions, inc_score = PlayField.clear_rows(grid, locked_positions)
+            locked_positions, inc_score = PlayField.clear_rows(grid, locked_positions)
             score += inc_score
 
         #Update display

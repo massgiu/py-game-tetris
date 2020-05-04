@@ -12,7 +12,7 @@ class PlayField:
         for row in range(Utils.ROWS):
             for col in range(Utils.COLUMNS):
                 if (col, row) in locked_positions:
-                    c = locked_positions[(col, row)]
+                    c = locked_positions[(col, row)] #vector of tuples
                     grid[row][col] = c
         return grid
 
@@ -20,8 +20,8 @@ class PlayField:
     @staticmethod
     def check_lost(positions):
         for pos in positions:
-            x, y = pos
-            if y < 1:  # means that a piece is over the screen height
+            col, row = pos
+            if row < 1:  # means that a piece is over the screen height
                 return True
         return False
 
@@ -50,24 +50,25 @@ class PlayField:
         # if a row is clear then shifts other row above down one
 
         row_full = 0
-        for i in range(len(grid) - 1, -1, -1): #from len(grid)-1 to 0 step -1 (from numColums to 0)
+        for i in range(Utils.ROWS - 1, -1, -1): #from len(grid)-1 to 0 step -1 (from Rows to 0)
             row = grid[i] #grid contains (r,g,b) that is (0,0,0) if cell is empty (grid[i] is a row)
             if Utils.EMPTY_CELL_COLOR not in row:
                 row_full += 1 #this increments if the row is full
                 # add positions to remove from locked
                 ind = i #row i is full
-                for j in range(len(row)):
+                for j in range(Utils.COLUMNS): #delete cells in the row that doesn't contain empty cell
                     try:
-                        del locked[(j, i)] #delete row
+                        del locked[(j, i)] #delete row in blocked cell
                     except:
                         continue
+        #now we need to shift all cells of locked, down of many rows as row_full
         if row_full > 0:
             for key in sorted(list(locked), key=lambda x: x[1])[::-1]:
-                x, y = key
-                if y < ind:
-                    newKey = (x, y + row_full)
+                col, row = key
+                if row < ind:
+                    newKey = (col, row + row_full)
                     locked[newKey] = locked.pop(key) #add row in the top
-        return grid,locked, row_full
+        return locked, row_full
 
     @staticmethod
     def draw_next_shape(piece, surface):
@@ -86,6 +87,8 @@ class PlayField:
                 if column == '0':
                     pygame.draw.rect(surface, piece.color, (sx + j*Utils.BLOCK_SIZE, sy + i*Utils.BLOCK_SIZE,
                                                             Utils.BLOCK_SIZE, Utils.BLOCK_SIZE), 0)
+                    pygame.draw.rect(surface, Utils.GRID_COLOR, (sx + j * Utils.BLOCK_SIZE, sy + i * Utils.BLOCK_SIZE,
+                                                            Utils.BLOCK_SIZE, Utils.BLOCK_SIZE), 1)
 
 
     @staticmethod
